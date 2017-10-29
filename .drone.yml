@@ -16,7 +16,7 @@ pipeline:
       - go get -u golang.org/x/tools/cmd/cover
       - go test -cover $(go list ./... | grep -v /vendor/)
   publish:
-    image: cjsaylor/boxmeup-go
+    image: plugins/docker
     repo: cjsaylor/boxmeup-go
     secrets: [ docker_username, docker_password ]
     tag: [ latest ]
