@@ -2,6 +2,8 @@
 
 > This is a WIP [Go](https://go-lang.org) implementation of [Boxmeup](https://boxmeupapp.com).
 
+![](https://drone.chris-saylor.com/api/badges/cjsaylor/boxmeup-go/status.svg)
+
 Boxmeup is a web and mobile application to help users keep track of what they have in their containers and how to find items in specific containers.
 
 ## Requirements
@@ -14,6 +16,8 @@ Boxmeup is a web and mobile application to help users keep track of what they ha
 ```bash
 cp docker-compose-dev.yml docker-compose.yml
 ```
+
+> Note: there is no production compse file yet.
 
 Modify the docker compose file to suit needs.
 
@@ -28,6 +32,32 @@ docker run -p 8080:8080 -e MYSQL_DSN=username:password@host:port/database cjsayl
 
 See `.env.sample` for available configurations.
 
+## Testing
+
+A Drone CI instance is used to run tests. To run them locally, setup Drone CLI (instructions for MacOS):
+
+### Install Drone CLI
+
+```bash
+curl -L https://github.com/drone/drone-cli/releases/download/v0.8.0/drone_darwin_amd64.tar.gz | tar zx
+sudo cp drone /usr/local/bin
+```
+
+or with Homebrew:
+
+```bash
+brew tap drone/drone
+brew install drone
+```
+
+See [Drone CLI documentation](http://docs.drone.io/cli-installation/)
+
+### Execute Tests
+
+```bash
+drone exec
+```
+
 ## Development
 
 In order to run tests you will need to prepare your MySQL db by running the [`schema.sql`](./schema.sql) on the MySQL db you plan to use. If you use the docker provided MySQL image specified in the `docker-compose.yml` file, you can run (on the running server):
@@ -35,8 +65,6 @@ In order to run tests you will need to prepare your MySQL db by running the [`sc
 ```bash
 # For local development
 cat schema.sql | docker exec -i $(docker-compose ps -q mysql) mysql boxmeup -u boxmeup -pboxmeup
-# For running unit tests
-cat schema.sql | docker exec -i $(docker-compose ps -q mysql) mysql bmu_test -u root -psupersecret
 ```
 
 Create a user:
@@ -79,7 +107,7 @@ To build: `go build -o server ./bin`
 
 To add a dependency:
 
-* `go get godep`
+* `go get godep` (If you don't already have it)
 * `go get <pkg>`
 * Use it somewhere in the code.
 * `godep save`
