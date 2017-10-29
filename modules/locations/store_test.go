@@ -2,9 +2,11 @@ package locations_test
 
 import (
 	"database/sql"
+	"fmt"
 	"os"
 	"testing"
 
+	"github.com/cjsaylor/boxmeup-go/modules/config"
 	"github.com/cjsaylor/boxmeup-go/modules/locations"
 	"github.com/cjsaylor/boxmeup-go/modules/models"
 	"github.com/cjsaylor/boxmeup-go/modules/users"
@@ -16,7 +18,7 @@ var db *sql.DB
 
 func TestMain(m *testing.M) {
 	// @todo replace this with configured database from app
-	db, _ = sql.Open("mysql", "root:supersecret@tcp(localhost:3306)/bmu_test?parseTime=true")
+	db, _ = sql.Open("mysql", fmt.Sprintf("%v?parseTime=true", config.Config.MysqlDSN))
 	defer db.Close()
 	setup(db)
 	os.Exit(m.Run())
@@ -70,6 +72,7 @@ func setup(db *sql.DB) {
 }
 
 func TestSortableField_String(t *testing.T) {
+	setup(db)
 	field := locations.SortFieldModified
 	if field.String() != "modified" {
 		t.Errorf("Expected 'modified' got %v", field.String())
@@ -77,6 +80,7 @@ func TestSortableField_String(t *testing.T) {
 }
 
 func TestGetSortBy(t *testing.T) {
+	setup(db)
 	var sql sql.DB
 	result := locations.NewStore(&sql).GetSortBy(locations.SortFieldName, models.ASC)
 	if result.Direction != models.ASC {
@@ -88,6 +92,7 @@ func TestGetSortBy(t *testing.T) {
 }
 
 func TestSortableFieldByName(t *testing.T) {
+	setup(db)
 	var sql sql.DB
 	locationModel := locations.NewStore(&sql)
 	result, err := locationModel.SortableFieldByName("modified")
@@ -104,6 +109,7 @@ func TestSortableFieldByName(t *testing.T) {
 }
 
 func TestStore_ByID(t *testing.T) {
+	setup(db)
 	locationModel := locations.NewStore(db)
 	result, err := locationModel.ByID(1)
 	if err != nil {
@@ -117,6 +123,7 @@ func TestStore_ByID(t *testing.T) {
 }
 
 func TestStore_Create(t *testing.T) {
+	setup(db)
 	locationModel := locations.NewStore(db)
 	location := locations.Location{
 		User: users.User{
@@ -146,6 +153,7 @@ func TestStore_Create(t *testing.T) {
 }
 
 func TestStore_Update(t *testing.T) {
+	setup(db)
 	locationModel := locations.NewStore(db)
 	location, err := locationModel.ByID(1)
 	if err != nil {
@@ -169,6 +177,7 @@ func TestStore_Update(t *testing.T) {
 }
 
 func TestStore_Delete(t *testing.T) {
+	setup(db)
 	locationModel := locations.NewStore(db)
 	err := locationModel.Delete(1)
 	if err != nil {
@@ -183,6 +192,7 @@ func TestStore_Delete(t *testing.T) {
 }
 
 func TestStore_FilteredLocations(t *testing.T) {
+	setup(db)
 	locationModel := locations.NewStore(db)
 	sort := locationModel.GetSortBy(locations.SortFieldModified, models.ASC)
 	limit := models.QueryLimit{
