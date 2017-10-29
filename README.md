@@ -2,7 +2,7 @@
 
 > This is a WIP [Go](https://go-lang.org) implementation of [Boxmeup](https://boxmeupapp.com).
 
-![](https://drone.chris-saylor.com/api/badges/cjsaylor/boxmeup-go/status.svg)
+[![](https://drone.chris-saylor.com/api/badges/cjsaylor/boxmeup-go/status.svg)](https://drone.chris-saylor.com/cjsaylor/boxmeup-go)
 
 Boxmeup is a web and mobile application to help users keep track of what they have in their containers and how to find items in specific containers.
 
