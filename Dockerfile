@@ -1,4 +1,4 @@
-FROM golang:1.8.3-alpine as builder
+FROM golang:1.9.2-alpine as builder
 COPY . /go/src/github.com/cjsaylor/boxmeup-go
 WORKDIR /go/src/github.com/cjsaylor/boxmeup-go
 RUN GOOS=linux GOARCH=386 go build -v -o server ./bin
