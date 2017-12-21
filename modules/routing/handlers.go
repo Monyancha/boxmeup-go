@@ -384,7 +384,7 @@ func ContainerItemsHandler(res http.ResponseWriter, req *http.Request) {
 	params := req.URL.Query()
 	var limit models.QueryLimit
 	page, _ := strconv.Atoi(params.Get("page"))
-	limit.SetPage(page, containers.QueryLimit)
+	limit.SetPage(page, items.QueryLimit)
 	itemModel := items.NewStore(db)
 	sort := itemModel.GetSortBy(params.Get("sort_field"), models.SortType(params.Get("sort_dir")))
 	response, err := itemModel.GetContainerItems(&container, sort, limit)

@@ -11,6 +11,9 @@ import (
 	"github.com/cjsaylor/boxmeup-go/modules/models"
 )
 
+// QueryLimit is the maximum number of container results per page.
+const QueryLimit = 20
+
 // Store persists and queries container items
 type Store struct {
 	DB *sql.DB
@@ -146,8 +149,7 @@ func (c *Store) GetContainerItems(container *containers.Container, sort models.S
 		order by %v %v
 		limit %v offset %v
 	`
-	q = fmt.Sprintf(q, sort.Field, sort.Direction, limit.Limit, limit.Offset)
-	rows, err := c.DB.Query(q, container.ID)
+	rows, err := c.DB.Query(fmt.Sprintf(q, sort.Field, sort.Direction, limit.Limit, limit.Offset), container.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -160,7 +162,12 @@ func (c *Store) GetContainerItems(container *containers.Container, sort models.S
 		response.Items = append(response.Items, item)
 	}
 	response.PagedResponse.RequestTotal = len(response.Items)
-	c.DB.QueryRow("select FOUND_ROWS()").Scan(&response.PagedResponse.Total)
+	countQ := `
+		select count(*)
+		from container_items
+		where container_id = ?
+	`
+	c.DB.QueryRow(countQ, container.ID).Scan(&response.PagedResponse.Total)
 	response.PagedResponse.CalculatePages(limit)
 	return response, rows.Err()
 }
