@@ -185,7 +185,7 @@ func (c *Store) FilteredContainers(filter ContainerFilter, sort models.SortBy, l
 		select SQL_CALC_FOUND_ROWS id, location_id, name, uuid, container_item_count, created, modified
 		from containers
 		where user_id = ? %v
-		order by %v %v
+		order by %v %v, id %v
 		limit %v offset %v
 	`
 	locationIDQueryModifier := ""
@@ -194,7 +194,7 @@ func (c *Store) FilteredContainers(filter ContainerFilter, sort models.SortBy, l
 		locationIDQueryModifier = "and location_id in (?" + strings.Repeat(",?", len(filter.LocationIDs)-1) + ")"
 		queryArgs = append(queryArgs, filter.GenericLocationIDList()...)
 	}
-	q = fmt.Sprintf(q, locationIDQueryModifier, sort.Field, sort.Direction, limit.Limit, limit.Offset)
+	q = fmt.Sprintf(q, locationIDQueryModifier, sort.Field, sort.Direction, sort.Direction, limit.Limit, limit.Offset)
 	rows, err := c.DB.Query(q, queryArgs...)
 	if err != nil {
 		log.Fatal(err)
