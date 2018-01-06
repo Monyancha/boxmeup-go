@@ -12,6 +12,9 @@ import (
 	chain "github.com/justinas/alice"
 )
 
+// SessionName is the cookie name for sessions
+const SessionName = "bmusession"
+
 // Route defines a route
 type Route struct {
 	Name    string

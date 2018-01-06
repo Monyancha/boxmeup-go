@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/cjsaylor/boxmeup-go/modules/config"
 	"github.com/cjsaylor/boxmeup-go/modules/containers"
@@ -44,6 +45,15 @@ func LoginHandler(res http.ResponseWriter, req *http.Request) {
 		res.WriteHeader(http.StatusUnauthorized)
 		jsonOut.Encode(jsonErrorResponse{-1, "Authentication failure."})
 	} else {
+		expiration := time.Now().Add(14 * 24 * time.Hour)
+		cookie := http.Cookie{
+			Name:     SessionName,
+			Value:    token,
+			Expires:  expiration,
+			HttpOnly: true,
+			Path:     "/",
+		}
+		http.SetCookie(res, &cookie)
 		res.WriteHeader(http.StatusOK)
 		jsonOut.Encode(map[string]string{
 			"token": token,
