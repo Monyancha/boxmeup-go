@@ -74,6 +74,11 @@ func jsonResponseHandler(next http.Handler) http.Handler {
 
 func authHandler(next http.Handler) http.Handler {
 	fn := func(res http.ResponseWriter, req *http.Request) {
+		sessionCookie, _ := req.Cookie(SessionName)
+		var token string
+		if sessionCookie != nil {
+			token = sessionCookie.Value
+		} else {
 		authHeader := req.Header.Get("Authorization")
 		if authHeader == "" {
 			http.Error(res, "Authorization required.", 401)
@@ -84,7 +89,10 @@ func authHandler(next http.Handler) http.Handler {
 			http.Error(res, "Authorization header must be in the form of: Bearer {token}", 401)
 			return
 		}
-		claims, err := users.ValidateAndDecodeAuthClaim(parts[1], users.AuthConfig{
+			token = parts[1]
+		}
+
+		claims, err := users.ValidateAndDecodeAuthClaim(token, users.AuthConfig{
 			JWTSecret: config.Config.JWTSecret,
 		})
 		if err != nil {
