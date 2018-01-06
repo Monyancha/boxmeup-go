@@ -6,7 +6,7 @@ pipeline:
   setup:
     image: mysql:5.6
     commands:
-      - sleep 10
+      - sleep 15
       - cat schema.sql | mysql -u root -psupersecret -h mysql bmu_test
   test:
     image: golang:1.8.3
