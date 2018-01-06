@@ -96,7 +96,11 @@ func authHandler(next http.Handler) http.Handler {
 			JWTSecret: config.Config.JWTSecret,
 		})
 		if err != nil {
-			http.Error(res, err.Error(), 401)
+			http.Error(res, err.Error(), http.StatusUnauthorized)
+			return
+		}
+		if req.Header.Get("x-xsrf-token") != claims["xsrfToken"] {
+			http.Error(res, "XSRF token mismatch!", http.StatusForbidden)
 			return
 		}
 		var userKey userKey = "user"
