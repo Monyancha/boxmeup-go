@@ -79,16 +79,16 @@ func authHandler(next http.Handler) http.Handler {
 		if sessionCookie != nil {
 			token = sessionCookie.Value
 		} else {
-		authHeader := req.Header.Get("Authorization")
-		if authHeader == "" {
-			http.Error(res, "Authorization required.", 401)
-			return
-		}
-		parts := strings.Split(authHeader, " ")
-		if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
-			http.Error(res, "Authorization header must be in the form of: Bearer {token}", 401)
-			return
-		}
+			authHeader := req.Header.Get("Authorization")
+			if authHeader == "" {
+				http.Error(res, "Authorization required.", 401)
+				return
+			}
+			parts := strings.Split(authHeader, " ")
+			if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
+				http.Error(res, "Authorization header must be in the form of: Bearer {token}", 401)
+				return
+			}
 			token = parts[1]
 		}
 
@@ -120,6 +120,12 @@ var routes = Routes{
 		"POST",
 		"/api/user/login",
 		chain.New(logHandler, jsonResponseHandler).ThenFunc(LoginHandler),
+	},
+	Route{
+		"Logout",
+		"GET",
+		"/api/user/logout",
+		chain.New(logHandler).ThenFunc(LogoutHandler),
 	},
 	Route{
 		"Register",

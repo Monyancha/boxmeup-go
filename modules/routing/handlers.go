@@ -61,6 +61,18 @@ func LoginHandler(res http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func LogoutHandler(res http.ResponseWriter, req *http.Request) {
+	cookie := http.Cookie{
+		Name:     SessionName,
+		Value:    "",
+		Expires:  time.Now().Add(-100 * time.Hour),
+		Path:     "/",
+		HttpOnly: true,
+	}
+	http.SetCookie(res, &cookie)
+	res.WriteHeader(http.StatusNoContent)
+}
+
 // RegisterHandler creates new users.
 func RegisterHandler(res http.ResponseWriter, req *http.Request) {
 	db, _ := database.GetDBResource()
