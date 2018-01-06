@@ -1,6 +1,7 @@
 package users
 
 import (
+	"crypto/rand"
 	"crypto/sha1"
 	"database/sql"
 	"errors"
@@ -49,12 +50,19 @@ func (s *Store) Login(config AuthConfig, email string, password string) (string,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":   ID,
-		"uuid": UUID,
-		"nbf":  time.Now().Unix(),
-		"exp":  time.Now().AddDate(0, 0, 5).Unix(),
+		"id":        ID,
+		"uuid":      UUID,
+		"nbf":       time.Now().Unix(),
+		"exp":       time.Now().AddDate(0, 0, 5).Unix(),
+		"xsrfToken": csrfToken(),
 	})
 	return token.SignedString([]byte(config.JWTSecret))
+}
+
+func csrfToken() []byte {
+	token := make([]byte, 256)
+	rand.Read(token)
+	return token
 }
 
 // Register creates a new user in the system.
