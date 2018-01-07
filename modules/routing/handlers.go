@@ -29,6 +29,11 @@ func IndexHandler(res http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(res, "Welcome!")
 }
 
+// HealthHandler serves up a health status.
+func HealthHandler(res http.ResponseWriter, req *http.Request) {
+	res.WriteHeader(http.StatusNoContent)
+}
+
 // LoginHandler authenticates via email and password
 func LoginHandler(res http.ResponseWriter, req *http.Request) {
 	db, _ := database.GetDBResource()

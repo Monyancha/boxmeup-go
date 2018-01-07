@@ -120,6 +120,12 @@ var routes = Routes{
 		chain.New(logHandler).ThenFunc(IndexHandler),
 	},
 	Route{
+		"Health",
+		"GET",
+		"/health",
+		chain.New(logHandler).ThenFunc(HealthHandler),
+	},
+	Route{
 		"Login",
 		"POST",
 		"/api/user/login",
