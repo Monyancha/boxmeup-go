@@ -199,7 +199,9 @@ func (c *Store) FilteredContainers(filter ContainerFilter, sort models.SortBy, l
 	if err != nil {
 		log.Fatal(err)
 	}
-	response := PagedResponse{}
+	response := PagedResponse{
+		Containers: make([]Container, 0),
+	}
 	defer rows.Close()
 	locationIDs := make(map[int64]int64)
 	var locationID int64
