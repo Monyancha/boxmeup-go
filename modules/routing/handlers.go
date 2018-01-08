@@ -103,6 +103,23 @@ func RegisterHandler(res http.ResponseWriter, req *http.Request) {
 	})
 }
 
+// UserHandler returns basic user information of current user.
+func UserHandler(res http.ResponseWriter, req *http.Request) {
+	db, _ := database.GetDBResource()
+	defer db.Close()
+	var userKey userKey = "user"
+	userID := int64(req.Context().Value(userKey).(jwt.MapClaims)["id"].(float64))
+	user, err := users.NewStore(db).ByID(userID)
+	jsonOut := json.NewEncoder(res)
+	if err != nil {
+		res.WriteHeader(http.StatusNotFound)
+		jsonOut.Encode(jsonErrorResponse{-1, "User specified not found."})
+		return
+	}
+	res.WriteHeader(http.StatusOK)
+	jsonOut.Encode(user)
+}
+
 // CreateContainerHandler allows creation of a container from a POST method
 // Expected body:
 //   name
