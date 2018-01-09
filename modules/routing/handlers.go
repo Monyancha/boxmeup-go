@@ -12,6 +12,7 @@ import (
 	"github.com/cjsaylor/boxmeup-go/modules/database"
 	"github.com/cjsaylor/boxmeup-go/modules/items"
 	"github.com/cjsaylor/boxmeup-go/modules/locations"
+	"github.com/cjsaylor/boxmeup-go/modules/middleware"
 	"github.com/cjsaylor/boxmeup-go/modules/models"
 	"github.com/cjsaylor/boxmeup-go/modules/users"
 	jwt "github.com/dgrijalva/jwt-go"
@@ -52,7 +53,7 @@ func LoginHandler(res http.ResponseWriter, req *http.Request) {
 	} else {
 		expiration := time.Now().Add(14 * 24 * time.Hour)
 		cookie := http.Cookie{
-			Name:     SessionName,
+			Name:     middleware.SessionName,
 			Value:    token,
 			Expires:  expiration,
 			HttpOnly: true,
@@ -68,7 +69,7 @@ func LoginHandler(res http.ResponseWriter, req *http.Request) {
 
 func LogoutHandler(res http.ResponseWriter, req *http.Request) {
 	cookie := http.Cookie{
-		Name:     SessionName,
+		Name:     middleware.SessionName,
 		Value:    "",
 		Expires:  time.Now().Add(-100 * time.Hour),
 		Path:     "/",
@@ -107,8 +108,7 @@ func RegisterHandler(res http.ResponseWriter, req *http.Request) {
 func UserHandler(res http.ResponseWriter, req *http.Request) {
 	db, _ := database.GetDBResource()
 	defer db.Close()
-	var userKey userKey = "user"
-	userID := int64(req.Context().Value(userKey).(jwt.MapClaims)["id"].(float64))
+	userID := int64(req.Context().Value(middleware.UserContextKey).(jwt.MapClaims)["id"].(float64))
 	user, err := users.NewStore(db).ByID(userID)
 	jsonOut := json.NewEncoder(res)
 	if err != nil {
@@ -127,8 +127,7 @@ func UserHandler(res http.ResponseWriter, req *http.Request) {
 func CreateContainerHandler(res http.ResponseWriter, req *http.Request) {
 	db, _ := database.GetDBResource()
 	defer db.Close()
-	var userKey userKey = "user"
-	userID := int64(req.Context().Value(userKey).(jwt.MapClaims)["id"].(float64))
+	userID := int64(req.Context().Value(middleware.UserContextKey).(jwt.MapClaims)["id"].(float64))
 	user, err := users.NewStore(db).ByID(userID)
 	jsonOut := json.NewEncoder(res)
 	if err != nil {
@@ -174,8 +173,7 @@ func UpdateContainerHandler(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	db, _ := database.GetDBResource()
 	defer db.Close()
-	var userKey userKey = "user"
-	userID := int64(req.Context().Value(userKey).(jwt.MapClaims)["id"].(float64))
+	userID := int64(req.Context().Value(middleware.UserContextKey).(jwt.MapClaims)["id"].(float64))
 	containerModel := containers.NewStore(db)
 	containerID, _ := strconv.Atoi(vars["id"])
 	container, err := containerModel.ByID(int64(containerID))
@@ -222,8 +220,7 @@ func DeleteContainerHandler(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	db, _ := database.GetDBResource()
 	defer db.Close()
-	var userKey userKey = "user"
-	userID := int64(req.Context().Value(userKey).(jwt.MapClaims)["id"].(float64))
+	userID := int64(req.Context().Value(middleware.UserContextKey).(jwt.MapClaims)["id"].(float64))
 	containerModel := containers.NewStore(db)
 	containerID, _ := strconv.Atoi(vars["id"])
 	container, err := containerModel.ByID(int64(containerID))
@@ -252,8 +249,7 @@ func ContainerHandler(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	db, _ := database.GetDBResource()
 	defer db.Close()
-	var userKey userKey = "user"
-	userID := int64(req.Context().Value(userKey).(jwt.MapClaims)["id"].(float64))
+	userID := int64(req.Context().Value(middleware.UserContextKey).(jwt.MapClaims)["id"].(float64))
 	containerID, _ := strconv.Atoi(vars["id"])
 	container, err := containers.NewStore(db).ByID(int64(containerID))
 	jsonOut := json.NewEncoder(res)
@@ -275,8 +271,7 @@ func ContainerHandler(res http.ResponseWriter, req *http.Request) {
 func ContainersHandler(res http.ResponseWriter, req *http.Request) {
 	db, _ := database.GetDBResource()
 	defer db.Close()
-	var userKey userKey = "user"
-	userID := int64(req.Context().Value(userKey).(jwt.MapClaims)["id"].(float64))
+	userID := int64(req.Context().Value(middleware.UserContextKey).(jwt.MapClaims)["id"].(float64))
 	userModel := users.NewStore(db)
 	user, err := userModel.ByID(userID)
 	jsonOut := json.NewEncoder(res)
@@ -320,8 +315,7 @@ func ContainerQR(res http.ResponseWriter, req *http.Request) {
 func SaveContainerItemHandler(res http.ResponseWriter, req *http.Request) {
 	db, _ := database.GetDBResource()
 	defer db.Close()
-	var userKey userKey = "user"
-	userID := int64(req.Context().Value(userKey).(jwt.MapClaims)["id"].(float64))
+	userID := int64(req.Context().Value(middleware.UserContextKey).(jwt.MapClaims)["id"].(float64))
 	jsonOut := json.NewEncoder(res)
 	vars := mux.Vars(req)
 	containerID, _ := strconv.Atoi(vars["id"])
@@ -378,8 +372,7 @@ func SaveContainerItemHandler(res http.ResponseWriter, req *http.Request) {
 func DeleteContainerItemHandler(res http.ResponseWriter, req *http.Request) {
 	db, _ := database.GetDBResource()
 	defer db.Close()
-	var userKey userKey = "user"
-	userID := int64(req.Context().Value(userKey).(jwt.MapClaims)["id"].(float64))
+	userID := int64(req.Context().Value(middleware.UserContextKey).(jwt.MapClaims)["id"].(float64))
 	jsonOut := json.NewEncoder(res)
 	vars := mux.Vars(req)
 	itemID, _ := strconv.Atoi(vars["item_id"])
@@ -409,8 +402,7 @@ func DeleteContainerItemHandler(res http.ResponseWriter, req *http.Request) {
 func ContainerItemsHandler(res http.ResponseWriter, req *http.Request) {
 	db, _ := database.GetDBResource()
 	defer db.Close()
-	var userKey userKey = "user"
-	userID := int64(req.Context().Value(userKey).(jwt.MapClaims)["id"].(float64))
+	userID := int64(req.Context().Value(middleware.UserContextKey).(jwt.MapClaims)["id"].(float64))
 	jsonOut := json.NewEncoder(res)
 	vars := mux.Vars(req)
 	containerID, _ := strconv.Atoi(vars["id"])
@@ -444,8 +436,7 @@ func ContainerItemsHandler(res http.ResponseWriter, req *http.Request) {
 func SearchItemHandler(res http.ResponseWriter, req *http.Request) {
 	db, _ := database.GetDBResource()
 	defer db.Close()
-	var userKey userKey = "user"
-	userID := int64(req.Context().Value(userKey).(jwt.MapClaims)["id"].(float64))
+	userID := int64(req.Context().Value(middleware.UserContextKey).(jwt.MapClaims)["id"].(float64))
 	params := req.URL.Query()
 	var limit models.QueryLimit
 	term := params.Get("term")
@@ -476,8 +467,7 @@ func SearchItemHandler(res http.ResponseWriter, req *http.Request) {
 func CreateLocationHandler(res http.ResponseWriter, req *http.Request) {
 	db, _ := database.GetDBResource()
 	defer db.Close()
-	var userKey userKey = "user"
-	userID := int64(req.Context().Value(userKey).(jwt.MapClaims)["id"].(float64))
+	userID := int64(req.Context().Value(middleware.UserContextKey).(jwt.MapClaims)["id"].(float64))
 	user, err := users.NewStore(db).ByID(userID)
 	jsonOut := json.NewEncoder(res)
 	if err != nil {
@@ -507,8 +497,7 @@ func UpdateLocationHandler(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	db, _ := database.GetDBResource()
 	defer db.Close()
-	var userKey userKey = "user"
-	userID := int64(req.Context().Value(userKey).(jwt.MapClaims)["id"].(float64))
+	userID := int64(req.Context().Value(middleware.UserContextKey).(jwt.MapClaims)["id"].(float64))
 	locationModel := locations.NewStore(db)
 	locationID, _ := strconv.Atoi(vars["id"])
 	location, err := locationModel.ByID(int64(locationID))
@@ -539,8 +528,7 @@ func DeleteLocationHandler(res http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	db, _ := database.GetDBResource()
 	defer db.Close()
-	var userKey userKey = "user"
-	userID := int64(req.Context().Value(userKey).(jwt.MapClaims)["id"].(float64))
+	userID := int64(req.Context().Value(middleware.UserContextKey).(jwt.MapClaims)["id"].(float64))
 	locationModel := locations.NewStore(db)
 	locationID, _ := strconv.Atoi(vars["id"])
 	location, err := locationModel.ByID(int64(locationID))
@@ -567,8 +555,7 @@ func DeleteLocationHandler(res http.ResponseWriter, req *http.Request) {
 func LocationsHandler(res http.ResponseWriter, req *http.Request) {
 	db, _ := database.GetDBResource()
 	defer db.Close()
-	var userKey userKey = "user"
-	userID := int64(req.Context().Value(userKey).(jwt.MapClaims)["id"].(float64))
+	userID := int64(req.Context().Value(middleware.UserContextKey).(jwt.MapClaims)["id"].(float64))
 	jsonOut := json.NewEncoder(res)
 	params := req.URL.Query()
 	var limit models.QueryLimit
