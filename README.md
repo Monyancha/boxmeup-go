@@ -8,7 +8,7 @@ Boxmeup is a web and mobile application to help users keep track of what they ha
 
 ## Requirements
 
-* [Go >= 1.8.1](https://golang.org) - For local development
+* [Go >= 1.9.2](https://golang.org) - For local development
 * [Docker 17.05.0-ce+](https://www.docker.com) - For building and running in docker containers
 
 ## Setup
@@ -111,3 +111,7 @@ To add a dependency:
 * `go get <pkg>`
 * Use it somewhere in the code.
 * `godep save`
+
+## Proprietary Code
+
+Proprietary code is included via hooks using the `go generate ./...` command. To include proprietary hooks, it must be included to `vendor/github.com/cjsaylor/boxmeup-hooks`.

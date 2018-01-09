@@ -86,12 +86,6 @@ var routes = Routes{
 		chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(ContainersHandler),
 	},
 	Route{
-		"ContainerQR",
-		"GET",
-		"/api/container/{id}/qrcode",
-		chain.New(logHandler, authHandler).ThenFunc(ContainerQR),
-	},
-	Route{
 		"CreateContainerItem",
 		"POST",
 		"/api/container/{id}/item",

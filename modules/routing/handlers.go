@@ -17,7 +17,6 @@ import (
 	"github.com/cjsaylor/boxmeup-go/modules/users"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
-	qrcode "github.com/skip2/go-qrcode"
 )
 
 type jsonErrorResponse struct {
@@ -298,14 +297,6 @@ func ContainersHandler(res http.ResponseWriter, req *http.Request) {
 	}
 	res.WriteHeader(http.StatusOK)
 	jsonOut.Encode(response)
-}
-
-// ContainerQR will output a QR code png for a specific container.
-func ContainerQR(res http.ResponseWriter, req *http.Request) {
-	vars := mux.Vars(req)
-	// @todo Figure out where this will direct to in the SPA.
-	qrBytes, _ := qrcode.Encode(fmt.Sprintf("%v/container/%v", config.Config.WebHost, vars["id"]), qrcode.Medium, 250)
-	res.Write(qrBytes)
 }
 
 // SaveContainerItemHandler allows creation of a container from a POST method

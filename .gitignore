@@ -2,3 +2,6 @@ server
 debug
 .env
 docker-compose.yml
+
+vendor/github.com/cjsaylor/boxmeup-hooks
+hooks/imagery.go
