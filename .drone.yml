@@ -9,11 +9,12 @@ pipeline:
       - sleep 15
       - cat schema.sql | mysql -u root -psupersecret -h mysql bmu_test
   test:
-    image: golang:1.8.3
+    image: golang:1.9.2
     environment:
       - MYSQL_DSN=root:supersecret@tcp(mysql:3306)/bmu_test
     commands:
       - go get -u golang.org/x/tools/cmd/cover
+      - go generate -v -x ./...
       - go test -cover $(go list ./... | grep -v /vendor/)
   publish:
     image: plugins/docker
