@@ -19,11 +19,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type jsonErrorResponse struct {
-	Code int    `json:"code"`
-	Text string `json:"text"`
-}
-
 // IndexHandler serves the static page
 func IndexHandler(res http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(res, "Welcome!")
@@ -48,7 +43,7 @@ func LoginHandler(res http.ResponseWriter, req *http.Request) {
 	jsonOut := json.NewEncoder(res)
 	if err != nil {
 		res.WriteHeader(http.StatusUnauthorized)
-		jsonOut.Encode(jsonErrorResponse{-1, "Authentication failure."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -1, Text: "Authentication failure."})
 	} else {
 		expiration := time.Now().Add(14 * 24 * time.Hour)
 		cookie := http.Cookie{
@@ -94,7 +89,7 @@ func RegisterHandler(res http.ResponseWriter, req *http.Request) {
 	jsonOut := json.NewEncoder(res)
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
-		jsonOut.Encode(jsonErrorResponse{-1, err.Error()})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -1, Text: err.Error()})
 		return
 	}
 	res.WriteHeader(http.StatusOK)
@@ -112,7 +107,7 @@ func UserHandler(res http.ResponseWriter, req *http.Request) {
 	jsonOut := json.NewEncoder(res)
 	if err != nil {
 		res.WriteHeader(http.StatusNotFound)
-		jsonOut.Encode(jsonErrorResponse{-1, "User specified not found."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -1, Text: "User specified not found."})
 		return
 	}
 	res.WriteHeader(http.StatusOK)
@@ -131,7 +126,7 @@ func CreateContainerHandler(res http.ResponseWriter, req *http.Request) {
 	jsonOut := json.NewEncoder(res)
 	if err != nil {
 		res.WriteHeader(http.StatusNotFound)
-		jsonOut.Encode(jsonErrorResponse{-1, "User specified not found."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -1, Text: "User specified not found."})
 		return
 	}
 	record := containers.NewRecord(&user)
@@ -141,11 +136,11 @@ func CreateContainerHandler(res http.ResponseWriter, req *http.Request) {
 		location, err := locations.NewStore(db).ByID(int64(locationID))
 		if err != nil {
 			res.WriteHeader(http.StatusNotFound)
-			jsonOut.Encode(jsonErrorResponse{-5, "Location not found."})
+			jsonOut.Encode(middleware.JsonErrorResponse{Code: -5, Text: "Location not found."})
 			return
 		} else if location.User.ID != userID {
 			res.WriteHeader(http.StatusForbidden)
-			jsonOut.Encode(jsonErrorResponse{-3, "Not allowed to attach supplied location to this container."})
+			jsonOut.Encode(middleware.JsonErrorResponse{Code: -3, Text: "Not allowed to attach supplied location to this container."})
 			return
 		}
 		record.SetLocation(&location)
@@ -155,7 +150,7 @@ func CreateContainerHandler(res http.ResponseWriter, req *http.Request) {
 	err = containers.NewStore(db).Create(&record)
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
-		jsonOut.Encode(jsonErrorResponse{-2, "Failed to create the container."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -2, Text: "Failed to create the container."})
 	} else {
 		res.WriteHeader(http.StatusOK)
 		jsonOut.Encode(map[string]int64{
@@ -179,12 +174,12 @@ func UpdateContainerHandler(res http.ResponseWriter, req *http.Request) {
 	jsonOut := json.NewEncoder(res)
 	if err != nil {
 		res.WriteHeader(http.StatusNotFound)
-		jsonOut.Encode(jsonErrorResponse{-1, "Container not found."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -1, Text: "Container not found."})
 		return
 	}
 	if container.User.ID != userID {
 		res.WriteHeader(http.StatusForbidden)
-		jsonOut.Encode(jsonErrorResponse{-2, "Not allowed to edit this container."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -2, Text: "Not allowed to edit this container."})
 		return
 	}
 	record := container.ToRecord()
@@ -194,11 +189,11 @@ func UpdateContainerHandler(res http.ResponseWriter, req *http.Request) {
 		location, err := locations.NewStore(db).ByID(int64(locationID))
 		if err != nil {
 			res.WriteHeader(http.StatusNotFound)
-			jsonOut.Encode(jsonErrorResponse{-5, "Location not found."})
+			jsonOut.Encode(middleware.JsonErrorResponse{Code: -5, Text: "Location not found."})
 			return
 		} else if location.User.ID != userID {
 			res.WriteHeader(http.StatusForbidden)
-			jsonOut.Encode(jsonErrorResponse{-3, "Not allowed to attach supplied location to this container."})
+			jsonOut.Encode(middleware.JsonErrorResponse{Code: -3, Text: "Not allowed to attach supplied location to this container."})
 			return
 		}
 		record.SetLocation(&location)
@@ -208,7 +203,7 @@ func UpdateContainerHandler(res http.ResponseWriter, req *http.Request) {
 	err = containerModel.Update(&record)
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		jsonOut.Encode(jsonErrorResponse{-4, err.Error()})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -4, Text: err.Error()})
 		return
 	}
 	res.WriteHeader(http.StatusNoContent)
@@ -226,18 +221,18 @@ func DeleteContainerHandler(res http.ResponseWriter, req *http.Request) {
 	jsonOut := json.NewEncoder(res)
 	if err != nil {
 		res.WriteHeader(http.StatusNotFound)
-		jsonOut.Encode(jsonErrorResponse{-1, "Container not found."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -1, Text: "Container not found."})
 		return
 	}
 	if container.User.ID != userID {
 		res.WriteHeader(http.StatusForbidden)
-		jsonOut.Encode(jsonErrorResponse{-2, "Not allowed to edit this container."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -2, Text: "Not allowed to edit this container."})
 		return
 	}
 	err = containerModel.Delete(int64(containerID))
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		jsonOut.Encode(jsonErrorResponse{-3, "Error deleting container."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -3, Text: "Error deleting container."})
 		return
 	}
 	res.WriteHeader(http.StatusNoContent)
@@ -254,12 +249,12 @@ func ContainerHandler(res http.ResponseWriter, req *http.Request) {
 	jsonOut := json.NewEncoder(res)
 	if err != nil {
 		res.WriteHeader(http.StatusNotFound)
-		jsonOut.Encode(jsonErrorResponse{-1, "Container not found."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -1, Text: "Container not found."})
 		return
 	}
 	if container.User.ID != userID {
 		res.WriteHeader(http.StatusForbidden)
-		jsonOut.Encode(jsonErrorResponse{-2, "Not allowed to view this container."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -2, Text: "Not allowed to view this container."})
 		return
 	}
 	res.WriteHeader(http.StatusOK)
@@ -276,7 +271,7 @@ func ContainersHandler(res http.ResponseWriter, req *http.Request) {
 	jsonOut := json.NewEncoder(res)
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
-		jsonOut.Encode(jsonErrorResponse{-1, "Unable to get user information."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -1, Text: "Unable to get user information."})
 		return
 	}
 	params := req.URL.Query()
@@ -292,7 +287,7 @@ func ContainersHandler(res http.ResponseWriter, req *http.Request) {
 	response, err := containerModel.FilteredContainers(filter, sort, limit)
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
-		jsonOut.Encode(jsonErrorResponse{-2, "Unable to retrieve containers."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -2, Text: "Unable to retrieve containers."})
 		return
 	}
 	res.WriteHeader(http.StatusOK)
@@ -313,12 +308,12 @@ func SaveContainerItemHandler(res http.ResponseWriter, req *http.Request) {
 	container, err := containers.NewStore(db).ByID(int64(containerID))
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
-		jsonOut.Encode(jsonErrorResponse{-1, "Failed to retrieve the container."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -1, Text: "Failed to retrieve the container."})
 		return
 	}
 	if container.User.ID != userID {
 		res.WriteHeader(http.StatusForbidden)
-		jsonOut.Encode(jsonErrorResponse{-2, "Not allowed to modify this container."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -2, Text: "Not allowed to modify this container."})
 		return
 	}
 	itemModel := items.NewStore(db)
@@ -328,7 +323,7 @@ func SaveContainerItemHandler(res http.ResponseWriter, req *http.Request) {
 		itemID, _ := strconv.Atoi(vars["item_id"])
 		item, err = itemModel.ByID(int64(itemID))
 		if err != nil {
-			jsonOut.Encode(jsonErrorResponse{-3, "Unable to retrieve item to modify."})
+			jsonOut.Encode(middleware.JsonErrorResponse{Code: -3, Text: "Unable to retrieve item to modify."})
 		}
 	} else {
 		item = items.ContainerItem{
@@ -350,7 +345,7 @@ func SaveContainerItemHandler(res http.ResponseWriter, req *http.Request) {
 	}
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		jsonOut.Encode(jsonErrorResponse{-4, "Unable to create container item"})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -4, Text: "Unable to create container item"})
 		return
 	}
 	res.WriteHeader(http.StatusOK)
@@ -371,18 +366,18 @@ func DeleteContainerItemHandler(res http.ResponseWriter, req *http.Request) {
 	item, err := itemModel.ByID(int64(itemID))
 	if err != nil {
 		res.WriteHeader(http.StatusNotFound)
-		jsonOut.Encode(jsonErrorResponse{-1, "Item not found."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -1, Text: "Item not found."})
 		return
 	}
 	if item.Container.User.ID != userID {
 		res.WriteHeader(http.StatusForbidden)
-		jsonOut.Encode(jsonErrorResponse{-2, "Not allowed to delete this item."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -2, Text: "Not allowed to delete this item."})
 		return
 	}
 	err = itemModel.Delete(item)
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		jsonOut.Encode(jsonErrorResponse{-3, "Unable to delete this item."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -3, Text: "Unable to delete this item."})
 		return
 	}
 	res.WriteHeader(http.StatusNoContent)
@@ -400,12 +395,12 @@ func ContainerItemsHandler(res http.ResponseWriter, req *http.Request) {
 	container, err := containers.NewStore(db).ByID(int64(containerID))
 	if err != nil {
 		res.WriteHeader(http.StatusNotFound)
-		jsonOut.Encode(jsonErrorResponse{-1, "Container not found."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -1, Text: "Container not found."})
 		return
 	}
 	if container.User.ID != userID {
 		res.WriteHeader(http.StatusForbidden)
-		jsonOut.Encode(jsonErrorResponse{-2, "Not allowed to view items in this container."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -2, Text: "Not allowed to view items in this container."})
 		return
 	}
 	params := req.URL.Query()
@@ -417,7 +412,7 @@ func ContainerItemsHandler(res http.ResponseWriter, req *http.Request) {
 	response, err := itemModel.GetContainerItems(&container, sort, limit)
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
-		jsonOut.Encode(jsonErrorResponse{-3, "Unable to retrieve container items."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -3, Text: "Unable to retrieve container items."})
 		return
 	}
 	res.WriteHeader(http.StatusOK)
@@ -434,7 +429,7 @@ func SearchItemHandler(res http.ResponseWriter, req *http.Request) {
 	jsonOut := json.NewEncoder(res)
 	if term == "" {
 		res.WriteHeader(http.StatusBadRequest)
-		jsonOut.Encode(jsonErrorResponse{-1, "Must provide a search term."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -1, Text: "Must provide a search term."})
 		return
 	}
 	page, _ := strconv.Atoi(params.Get("page"))
@@ -444,7 +439,7 @@ func SearchItemHandler(res http.ResponseWriter, req *http.Request) {
 	response, err := itemModel.SearchItems(int64(userID), term, sort, limit)
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
-		jsonOut.Encode(jsonErrorResponse{-2, "Unable to retrieve items."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -2, Text: "Unable to retrieve items."})
 		return
 	}
 	res.WriteHeader(http.StatusOK)
@@ -463,7 +458,7 @@ func CreateLocationHandler(res http.ResponseWriter, req *http.Request) {
 	jsonOut := json.NewEncoder(res)
 	if err != nil {
 		res.WriteHeader(http.StatusNotFound)
-		jsonOut.Encode(jsonErrorResponse{-1, "Unable to find user to associate this location."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -1, Text: "Unable to find user to associate this location."})
 		return
 	}
 	location := locations.Location{
@@ -474,7 +469,7 @@ func CreateLocationHandler(res http.ResponseWriter, req *http.Request) {
 	err = locations.NewStore(db).Create(&location)
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		jsonOut.Encode(jsonErrorResponse{-2, "Unable to store location."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -2, Text: "Unable to store location."})
 		return
 	}
 	res.WriteHeader(http.StatusOK)
@@ -495,12 +490,12 @@ func UpdateLocationHandler(res http.ResponseWriter, req *http.Request) {
 	jsonOut := json.NewEncoder(res)
 	if err != nil {
 		res.WriteHeader(http.StatusNotFound)
-		jsonOut.Encode(jsonErrorResponse{-1, "Location not found."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -1, Text: "Location not found."})
 		return
 	}
 	if userID != location.User.ID {
 		res.WriteHeader(http.StatusForbidden)
-		jsonOut.Encode(jsonErrorResponse{-2, "Not allowed to modify this location."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -2, Text: "Not allowed to modify this location."})
 		return
 	}
 	location.Name = req.PostFormValue("name")
@@ -508,7 +503,7 @@ func UpdateLocationHandler(res http.ResponseWriter, req *http.Request) {
 	err = locationModel.Update(&location)
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		jsonOut.Encode(jsonErrorResponse{-3, "Failed to update location."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -3, Text: "Failed to update location."})
 		return
 	}
 	res.WriteHeader(http.StatusNoContent)
@@ -526,18 +521,18 @@ func DeleteLocationHandler(res http.ResponseWriter, req *http.Request) {
 	jsonOut := json.NewEncoder(res)
 	if err != nil {
 		res.WriteHeader(http.StatusNotFound)
-		jsonOut.Encode(jsonErrorResponse{-1, "Location not found."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -1, Text: "Location not found."})
 		return
 	}
 	if userID != location.User.ID {
 		res.WriteHeader(http.StatusForbidden)
-		jsonOut.Encode(jsonErrorResponse{-2, "Not allowed to remove this location."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -2, Text: "Not allowed to remove this location."})
 		return
 	}
 	err = locationModel.Delete(int64(locationID))
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		jsonOut.Encode(jsonErrorResponse{-3, "Unable to remove location."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -3, Text: "Unable to remove location."})
 	}
 	res.WriteHeader(http.StatusNoContent)
 }
@@ -559,14 +554,14 @@ func LocationsHandler(res http.ResponseWriter, req *http.Request) {
 		sortField, err = locationModel.SortableFieldByName(userSortField)
 		if err != nil {
 			res.WriteHeader(http.StatusBadRequest)
-			jsonOut.Encode(jsonErrorResponse{-1, "Invalid sort field"})
+			jsonOut.Encode(middleware.JsonErrorResponse{Code: -1, Text: "Invalid sort field"})
 			return
 		}
 	}
 	user, err := users.NewStore(db).ByID(int64(userID))
 	if err != nil {
 		res.WriteHeader(http.StatusUnauthorized)
-		jsonOut.Encode(jsonErrorResponse{-2, "User not found."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -2, Text: "User not found."})
 		return
 	}
 	sort := locationModel.GetSortBy(sortField, models.SortType(params.Get("sort_dir")))
@@ -577,7 +572,7 @@ func LocationsHandler(res http.ResponseWriter, req *http.Request) {
 	response, err := locationModel.FilteredLocations(filter, sort, limit)
 	if err != nil {
 		res.WriteHeader(http.StatusInternalServerError)
-		jsonOut.Encode(jsonErrorResponse{-3, "Unable to get locations."})
+		jsonOut.Encode(middleware.JsonErrorResponse{Code: -3, Text: "Unable to get locations."})
 		return
 	}
 	res.WriteHeader(http.StatusOK)
