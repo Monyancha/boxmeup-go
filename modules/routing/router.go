@@ -4,6 +4,7 @@ package routing
 
 import (
 	"github.com/cjsaylor/boxmeup-go/hooks"
+	"github.com/cjsaylor/boxmeup-go/modules/items"
 	"github.com/gorilla/mux"
 )
 
@@ -17,6 +18,11 @@ func NewRouter() *mux.Router {
 			Name(route.Name).
 			Handler(route.Handler)
 	}
+	// Built in
+	bindRouteHook(router, items.Hook{})
+
+	// External propriatary
+	// @todo Consider using golang's plugin setup and have these pre-compiled to a .so
 	bindRouteHook(router, hooks.ImageryRouteHook{})
 	return router
 }
