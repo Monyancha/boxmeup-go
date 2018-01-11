@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 	"sync"
 
 	"github.com/cjsaylor/boxmeup-go/modules/containers"
@@ -103,6 +104,30 @@ func (c *Store) Delete(item ContainerItem) error {
 	} else {
 		tx.Rollback()
 	}
+	return err
+}
+
+// DeleteMany remove a set of items from a container
+func (c *Store) DeleteMany(items ContainerItems) error {
+	ids := make([]interface{}, len(items))
+	for _, item := range items {
+		ids = append(ids, item.ID)
+	}
+	q := fmt.Sprintf("delete from container_items where id in (%s)", strings.Repeat("?", len(items)-1))
+	tx, _ := c.DB.Begin()
+	_, err := tx.Exec(q, ids...)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	for _, container := range items.ExtractContainers() {
+		err := updateContainerItemCount(tx, container.ID)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+	tx.Commit()
 	return err
 }
 
@@ -215,5 +240,4 @@ func (c *Store) SearchItems(userID int64, term string, sort models.SortBy, limit
 	response.PagedResponse.CalculatePages(limit)
 	wg.Wait()
 	return response, rows.Err()
-
 }

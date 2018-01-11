@@ -19,3 +19,15 @@ type ContainerItem struct {
 
 // ContainerItems is a collection of container items.
 type ContainerItems []ContainerItem
+
+func (i *ContainerItems) ExtractContainers() []containers.Container {
+	ids := make(map[int64]bool)
+	containers := make([]containers.Container, 0)
+	for _, item := range *i {
+		if !ids[item.ID] {
+			ids[item.ID] = true
+			containers = append(containers, *item.Container)
+		}
+	}
+	return containers
+}
