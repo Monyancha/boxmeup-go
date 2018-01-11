@@ -109,11 +109,11 @@ func (c *Store) Delete(item ContainerItem) error {
 
 // DeleteMany remove a set of items from a container
 func (c *Store) DeleteMany(items ContainerItems) error {
-	ids := make([]interface{}, len(items))
+	ids := make([]interface{}, 0)
 	for _, item := range items {
 		ids = append(ids, item.ID)
 	}
-	q := fmt.Sprintf("delete from container_items where id in (%s)", strings.Repeat("?", len(items)-1))
+	q := fmt.Sprintf("delete from container_items where id in (%s)", "?"+strings.Repeat(",?", len(items)-1))
 	tx, _ := c.DB.Begin()
 	_, err := tx.Exec(q, ids...)
 	if err != nil {
