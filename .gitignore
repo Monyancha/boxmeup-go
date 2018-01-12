@@ -4,4 +4,4 @@ debug
 docker-compose.yml
 
 vendor/github.com/cjsaylor/boxmeup-hooks
-hooks/imagery.go
+hooks/*.so

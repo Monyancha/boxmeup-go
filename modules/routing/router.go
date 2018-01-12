@@ -1,12 +1,18 @@
 package routing
 
-//go:generate go run ../../internal/importhooks.go ../../
-
 import (
+	"fmt"
+	"os"
+	"plugin"
+
 	"github.com/cjsaylor/boxmeup-go/hooks"
 	"github.com/cjsaylor/boxmeup-go/modules/items"
 	"github.com/gorilla/mux"
 )
+
+var externalPlugins = []string{
+	"imagery",
+}
 
 // NewRouter gets a pre-configured router with all defined routes
 func NewRouter() *mux.Router {
@@ -19,14 +25,19 @@ func NewRouter() *mux.Router {
 			Handler(route.Handler)
 	}
 	// Built in
-	bindRouteHook(router, items.Hook{})
+	(items.Hook{}).Apply(router)
 
-	// External propriatary
-	// @todo Consider using golang's plugin setup and have these pre-compiled to a .so
-	bindRouteHook(router, hooks.ImageryRouteHook{})
+	// External propriatary plugins (these assume to be in a local hooks/ folder)
+	for _, name := range externalPlugins {
+		plugin, err := plugin.Open(fmt.Sprintf("hooks/%s.so", name))
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			continue
+		}
+		routeHookSym, _ := plugin.Lookup("RouteHook")
+		routeHook := routeHookSym.(*hooks.RouteHook)
+		(*routeHook).Apply(router)
+		fmt.Fprintf(os.Stderr, "Applied routehook: %s.so", name)
+	}
 	return router
-}
-
-func bindRouteHook(router *mux.Router, hook hooks.RouteHook) {
-	hook.Apply(router)
 }
