@@ -114,6 +114,6 @@ To add a dependency:
 
 ## Proprietary Code
 
-Proprietary code is included via go packages built with the `-buildmode=plugin` flag for the appropriate OS.
+Proprietary code is included via go packages built with the `-buildmode=plugin` flag for the appropriate OS. The plugin must expose a symbol of a "instantiated" struct that implements `hooks.RouteHook`.
 
 To build the proprietary source, it must be included in the `vendor/` directory. Then copy the `.so` file to the `hooks/` directory and update `modules/routing/router.go` to pull it in at starup.
