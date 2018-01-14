@@ -9,7 +9,7 @@ pipeline:
       - sleep 15
       - cat schema.sql | mysql -u root -psupersecret -h mysql bmu_test
   test:
-    image: golang:1.9.2
+    image: cjsaylor/go-alpine-sdk:1.10-rc
     environment:
       - MYSQL_DSN=root:supersecret@tcp(mysql:3306)/bmu_test
     commands:
