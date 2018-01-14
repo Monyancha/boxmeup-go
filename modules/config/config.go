@@ -2,9 +2,17 @@ package config
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/caarlos0/env"
 )
+
+type Route struct {
+	Name    string
+	Method  string
+	Pattern string
+	Handler http.Handler
+}
 
 // Configuration is a placeholder for available configurations
 type Configuration struct {
