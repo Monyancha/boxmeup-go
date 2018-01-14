@@ -9,7 +9,7 @@ RUN adduser -D -u 1000 appuser
 USER appuser
 WORKDIR /app
 COPY --from=builder /go/src/github.com/cjsaylor/boxmeup-go/server server
-COPY ./hooks/*.so /app/hooks/
+COPY ./hooks/LICENSE.md ./hooks/*.so /app/hooks/
 EXPOSE 8080
 
 CMD ["./server"]
