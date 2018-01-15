@@ -14,7 +14,6 @@ pipeline:
       - MYSQL_DSN=root:supersecret@tcp(mysql:3306)/bmu_test
     commands:
       - go get -u golang.org/x/tools/cmd/cover
-      - go generate -v -x ./...
       - go test -cover $(go list ./... | grep -v /vendor/)
   publish:
     image: plugins/docker
