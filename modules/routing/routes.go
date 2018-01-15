@@ -32,30 +32,6 @@ var routes = Routes{
 		chain.New(middleware.LogHandler).ThenFunc(HealthHandler),
 	},
 	Route{
-		"Login",
-		"POST",
-		"/api/user/login",
-		chain.New(middleware.LogHandler, middleware.JsonResponseHandler).ThenFunc(LoginHandler),
-	},
-	Route{
-		"Logout",
-		"GET",
-		"/api/user/logout",
-		chain.New(middleware.LogHandler).ThenFunc(LogoutHandler),
-	},
-	Route{
-		"Register",
-		"POST",
-		"/api/user/register",
-		chain.New(middleware.LogHandler, middleware.JsonResponseHandler).ThenFunc(RegisterHandler),
-	},
-	Route{
-		"User",
-		"GET",
-		"/api/user/current",
-		chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(UserHandler),
-	},
-	Route{
 		"CreateLocation",
 		"POST",
 		"/api/location",

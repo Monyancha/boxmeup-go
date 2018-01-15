@@ -5,10 +5,10 @@ import (
 	"os"
 	"plugin"
 
-	"github.com/cjsaylor/boxmeup-go/modules/containers"
-
 	"github.com/cjsaylor/boxmeup-go/hooks"
+	"github.com/cjsaylor/boxmeup-go/modules/containers"
 	"github.com/cjsaylor/boxmeup-go/modules/items"
+	"github.com/cjsaylor/boxmeup-go/modules/users"
 	"github.com/gorilla/mux"
 )
 
@@ -27,6 +27,7 @@ func NewRouter() *mux.Router {
 			Handler(route.Handler)
 	}
 	// Built in
+	(users.Hook{}).Apply(router)
 	(items.Hook{}).Apply(router)
 	(containers.Hook{}).Apply(router)
 
