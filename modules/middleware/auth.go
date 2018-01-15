@@ -2,11 +2,11 @@ package middleware
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/cjsaylor/boxmeup-go/modules/config"
-	"github.com/cjsaylor/boxmeup-go/modules/users"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
@@ -18,6 +18,24 @@ const (
 	// UserContextKey is the key for pulling user info out of request context
 	UserContextKey userKey = "user"
 )
+
+// AuthConfig is configuration used for authorization operations
+type AuthConfig struct {
+	LegacySalt string
+	JWTSecret  string
+}
+
+// validateAndDecodeAuthClaim will ensure the token provided was signed by us and decode its contents
+func validateAndDecodeAuthClaim(token string, config AuthConfig) (jwt.MapClaims, error) {
+	t, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+		// Verify the algorhythm matches what we original signed
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(config.JWTSecret), nil
+	})
+	return t.Claims.(jwt.MapClaims), err
+}
 
 func AuthHandler(next http.Handler) http.Handler {
 	fn := func(res http.ResponseWriter, req *http.Request) {
@@ -39,7 +57,7 @@ func AuthHandler(next http.Handler) http.Handler {
 			token = parts[1]
 		}
 
-		claims, err := users.ValidateAndDecodeAuthClaim(token, users.AuthConfig{
+		claims, err := validateAndDecodeAuthClaim(token, AuthConfig{
 			JWTSecret: config.Config.JWTSecret,
 		})
 		if err != nil {

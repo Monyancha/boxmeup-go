@@ -9,6 +9,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/cjsaylor/boxmeup-go/modules/middleware"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
@@ -22,19 +23,13 @@ func NewStore(db *sql.DB) *Store {
 	return &Store{DB: db}
 }
 
-// AuthConfig is configuration used for authorization operations
-type AuthConfig struct {
-	LegacySalt string
-	JWTSecret  string
-}
-
-func hashPassword(config AuthConfig, password string) string {
+func hashPassword(config middleware.AuthConfig, password string) string {
 	data := []byte(fmt.Sprintf("%v%v", config.LegacySalt, password))
 	return fmt.Sprintf("%x", sha1.Sum(data))
 }
 
 // Login authenticates user credentials and produces a signed JWT
-func (s *Store) Login(config AuthConfig, email string, password string) (string, error) {
+func (s *Store) Login(config middleware.AuthConfig, email string, password string) (string, error) {
 	hashedPassword := hashPassword(config, password)
 	var ID int
 	var UUID string
@@ -67,7 +62,7 @@ func csrfToken() []byte {
 
 // Register creates a new user in the system.
 // @todo Replace shitty password hashing with a more robust mechanism (bcrypt)
-func (s *Store) Register(config AuthConfig, email string, password string) (id int64, err error) {
+func (s *Store) Register(config middleware.AuthConfig, email string, password string) (id int64, err error) {
 	if s.doesUserExistByEmail(email) {
 		return 0, errors.New("user already exists with given email")
 	}
@@ -87,18 +82,6 @@ func (s *Store) doesUserExistByEmail(email string) bool {
 	var count int
 	s.DB.QueryRow(q, email).Scan(&count)
 	return count > 0
-}
-
-// ValidateAndDecodeAuthClaim will ensure the token provided was signed by us and decode its contents
-func ValidateAndDecodeAuthClaim(token string, config AuthConfig) (jwt.MapClaims, error) {
-	t, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-		// Verify the algorhythm matches what we original signed
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-		}
-		return []byte(config.JWTSecret), nil
-	})
-	return t.Claims.(jwt.MapClaims), err
 }
 
 // ByID resolves with a user on the channel.
