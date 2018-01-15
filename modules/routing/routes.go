@@ -56,36 +56,6 @@ var routes = Routes{
 		chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(UserHandler),
 	},
 	Route{
-		"CreateContainer",
-		"POST",
-		"/api/container",
-		chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(CreateContainerHandler),
-	},
-	Route{
-		"UpdateContainer",
-		"PUT",
-		"/api/container/{id}",
-		chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(UpdateContainerHandler),
-	},
-	Route{
-		"DeleteContainer",
-		"DELETE",
-		"/api/container/{id}",
-		chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(DeleteContainerHandler),
-	},
-	Route{
-		"Container",
-		"GET",
-		"/api/container/{id}",
-		chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(ContainerHandler),
-	},
-	Route{
-		"Containers",
-		"GET",
-		"/api/container",
-		chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(ContainersHandler),
-	},
-	Route{
 		"CreateLocation",
 		"POST",
 		"/api/location",
