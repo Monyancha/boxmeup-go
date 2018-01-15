@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/cjsaylor/boxmeup-go/modules/config"
-	"github.com/cjsaylor/boxmeup-go/modules/database"
-	"github.com/cjsaylor/boxmeup-go/modules/middleware"
+	"github.com/cjsaylor/boxmeup-go/config"
+	"github.com/cjsaylor/boxmeup-go/database"
+	"github.com/cjsaylor/boxmeup-go/middleware"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	chain "github.com/justinas/alice"

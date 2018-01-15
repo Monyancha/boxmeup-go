@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/cjsaylor/boxmeup-go/modules/config"
-	"github.com/cjsaylor/boxmeup-go/modules/routing"
+	"github.com/cjsaylor/boxmeup-go/config"
+	"github.com/cjsaylor/boxmeup-go/routing"
 )
 
 func main() {

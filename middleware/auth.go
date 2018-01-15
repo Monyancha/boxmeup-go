@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/cjsaylor/boxmeup-go/modules/config"
+	"github.com/cjsaylor/boxmeup-go/config"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 

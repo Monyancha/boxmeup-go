@@ -5,7 +5,7 @@ import (
 
 	"fmt"
 
-	"github.com/cjsaylor/boxmeup-go/modules/config"
+	"github.com/cjsaylor/boxmeup-go/config"
 	_ "github.com/go-sql-driver/mysql"
 )
 

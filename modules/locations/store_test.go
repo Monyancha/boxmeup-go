@@ -6,9 +6,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/cjsaylor/boxmeup-go/modules/config"
+	"github.com/cjsaylor/boxmeup-go/config"
+	"github.com/cjsaylor/boxmeup-go/models"
 	"github.com/cjsaylor/boxmeup-go/modules/locations"
-	"github.com/cjsaylor/boxmeup-go/modules/models"
 	"github.com/cjsaylor/boxmeup-go/modules/users"
 	"github.com/cjsaylor/sqlfixture"
 	_ "github.com/go-sql-driver/mysql"

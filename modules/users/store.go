@@ -9,7 +9,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/cjsaylor/boxmeup-go/modules/middleware"
+	"github.com/cjsaylor/boxmeup-go/middleware"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 

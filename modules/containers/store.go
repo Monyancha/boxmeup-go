@@ -8,8 +8,8 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/cjsaylor/boxmeup-go/models"
 	"github.com/cjsaylor/boxmeup-go/modules/locations"
-	"github.com/cjsaylor/boxmeup-go/modules/models"
 	"github.com/cjsaylor/boxmeup-go/modules/users"
 )
 
