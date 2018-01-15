@@ -8,6 +8,7 @@ import (
 	"github.com/cjsaylor/boxmeup-go/hooks"
 	"github.com/cjsaylor/boxmeup-go/modules/containers"
 	"github.com/cjsaylor/boxmeup-go/modules/items"
+	"github.com/cjsaylor/boxmeup-go/modules/locations"
 	"github.com/cjsaylor/boxmeup-go/modules/users"
 	"github.com/gorilla/mux"
 )
@@ -30,6 +31,7 @@ func NewRouter() *mux.Router {
 	(users.Hook{}).Apply(router)
 	(items.Hook{}).Apply(router)
 	(containers.Hook{}).Apply(router)
+	(locations.Hook{}).Apply(router)
 
 	// External propriatary plugins (these assume to be in a local hooks/ folder)
 	for _, name := range externalPlugins {

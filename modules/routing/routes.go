@@ -31,28 +31,4 @@ var routes = Routes{
 		"/health",
 		chain.New(middleware.LogHandler).ThenFunc(HealthHandler),
 	},
-	Route{
-		"CreateLocation",
-		"POST",
-		"/api/location",
-		chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(CreateLocationHandler),
-	},
-	Route{
-		"UpdateLocation",
-		"PUT",
-		"/api/location/{id}",
-		chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(UpdateLocationHandler),
-	},
-	Route{
-		"DeleteLocation",
-		"DELETE",
-		"/api/location/{id}",
-		chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(DeleteLocationHandler),
-	},
-	Route{
-		"Locations",
-		"GET",
-		"/api/location",
-		chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(LocationsHandler),
-	},
 }
