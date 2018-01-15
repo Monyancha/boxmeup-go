@@ -7,6 +7,7 @@ import (
 
 	"github.com/cjsaylor/boxmeup-go/modules/config"
 	"github.com/cjsaylor/boxmeup-go/modules/users"
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
 type userKey string
@@ -56,4 +57,9 @@ func AuthHandler(next http.Handler) http.Handler {
 		return
 	}
 	return http.HandlerFunc(fn)
+}
+
+// UserIDFromRequest retireves the user's ID from request context
+func UserIDFromRequest(req *http.Request) int64 {
+	return int64(req.Context().Value(UserContextKey).(jwt.MapClaims)["id"].(float64))
 }
