@@ -14,10 +14,11 @@ Boxmeup is a web and mobile application to help users keep track of what they ha
 ## Setup
 
 ```bash
+cp .env.sample .env
 cp docker-compose-dev.yml docker-compose.yml
 ```
 
-> Note: there is no production compse file yet.
+> Note: there is no production compose file yet.
 
 Modify the docker compose file to suit needs.
 
@@ -101,16 +102,9 @@ Use the token in the header of further API requests (cURL example):
 -H 'authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0OTU1NTI1MzgsImlkIjoyLCJuYmYiOjE0OTUxMjA1MzgsInV1aWQiOiJkMjU1MzY5OC0zYmRjLTExZTctYTU0NC0wODAwMjdkNGZkMjgifQ.ccSUP9AOrBplbwBs6e8dpTpePXHLipBSHvnYL1gFalw'
 ```
 
-Dependencies are committed into the repo via `godeps`, so no `go install` required.
+Dependencies are committed into the `vendor/` directory via [`dep`](https://github.com/golang/dep), so no `go install` required.
 
 To build: `go build -o server ./bin`
-
-To add a dependency:
-
-* `go get godep` (If you don't already have it)
-* `go get <pkg>`
-* Use it somewhere in the code.
-* `godep save`
 
 ## Proprietary Code
 
