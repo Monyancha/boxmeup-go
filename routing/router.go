@@ -47,6 +47,12 @@ func NewRouter() *mux.Router {
 	(locations.Hook{}).Apply(router)
 
 	// External propriatary plugins (these assume to be in a local hooks/ folder)
+	loadExternalPlugins(router)
+
+	return router
+}
+
+func loadExternalPlugins(router *mux.Router) {
 	for _, name := range externalPlugins {
 		plugin, err := plugin.Open(fmt.Sprintf("hooks/%s.so", name))
 		if err != nil {
@@ -58,7 +64,6 @@ func NewRouter() *mux.Router {
 		(*routeHook).Apply(router)
 		fmt.Fprintf(os.Stderr, "Applied routehook: %s.so", name)
 	}
-	return router
 }
 
 // HealthHandler serves up a health status.
