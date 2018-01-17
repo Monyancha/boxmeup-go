@@ -1,15 +1,16 @@
 {
 	"ImportPath": "github.com/cjsaylor/boxmeup-go",
-	"GoVersion": "go1.8",
+	"GoVersion": "go1.9",
 	"GodepVersion": "v79",
 	"Packages": [
-		"./..."
+		"./bin",
+		"./modules/..."
 	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/caarlos0/env",
-			"Comment": "v2.1-10-g7110c4e",
-			"Rev": "7110c4e2f569e729e19ad2d89fb3b5e3d159d8ca"
+			"Comment": "v3.2.0",
+			"Rev": "7cd7992b3bc86f920394f8de92c13900da1a46b7"
 		},
 		{
 			"ImportPath": "github.com/cjsaylor/sqlfixture",
@@ -26,6 +27,11 @@
 			"Rev": "336127359b09c9c8164e39c4c44f4d36ef081dc8"
 		},
 		{
+			"ImportPath": "github.com/gorilla/handlers",
+			"Comment": "v1.2-4-g13d7309",
+			"Rev": "13d73096a474cac93275c679c7b8a2dc17ddba82"
+		},
+		{
 			"ImportPath": "github.com/gorilla/mux",
 			"Comment": "v1.3.0-6-g4c1c395",
 			"Rev": "4c1c3952b7d9d0a061a3fa7b36fd373ba0398ebc"
@@ -34,18 +40,6 @@
 			"ImportPath": "github.com/justinas/alice",
 			"Comment": "1.0.0-16-g1051eaf",
 			"Rev": "1051eaf52fcafdd87ead59d28b065f1fcb8274ec"
-		},
-		{
-			"ImportPath": "github.com/skip2/go-qrcode",
-			"Rev": "0bb60b5a716144fa55da373bab578cca49a537d7"
-		},
-		{
-			"ImportPath": "github.com/skip2/go-qrcode/bitset",
-			"Rev": "0bb60b5a716144fa55da373bab578cca49a537d7"
-		},
-		{
-			"ImportPath": "github.com/skip2/go-qrcode/reedsolomon",
-			"Rev": "0bb60b5a716144fa55da373bab578cca49a537d7"
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",
