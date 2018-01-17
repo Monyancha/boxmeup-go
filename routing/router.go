@@ -6,7 +6,6 @@ import (
 	"os"
 	"plugin"
 
-	"github.com/cjsaylor/boxmeup-go/config"
 	"github.com/cjsaylor/boxmeup-go/hooks"
 	"github.com/cjsaylor/boxmeup-go/middleware"
 	"github.com/cjsaylor/boxmeup-go/modules/containers"
@@ -20,25 +19,23 @@ var externalPlugins = []string{
 	"imagery",
 }
 
-var routes = []config.Route{
-	config.Route{
-		Name:    "Health",
-		Method:  "GET",
-		Pattern: "/health",
-		Handler: http.HandlerFunc(HealthHandler),
-	},
-}
-
 // NewRouter gets a pre-configured router with all defined routes
 func NewRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
-	for _, route := range routes {
-		router.
-			Methods(route.Method).
-			Path(route.Pattern).
-			Name(route.Name).
-			Handler(route.Handler)
-	}
+
+	// Add a CORS pre-flight handler
+	router.Methods("OPTIONS").HandlerFunc(middleware.CORSHandlerFunc)
+
+	// Add a health endpoint
+	// @todo check a thread safe shutdown flag as well as look at database health
+	router.Methods("GET").Path("/health").HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		res.WriteHeader(http.StatusNoContent)
+	})
+
+	// Global middleware
+	router.Use(middleware.CORSHandler)
+	router.Use(middleware.LogHandler)
+
 	// Built in
 	(users.Hook{}).Apply(router)
 	(items.Hook{}).Apply(router)
@@ -47,9 +44,6 @@ func NewRouter() *mux.Router {
 
 	// External propriatary plugins (these assume to be in a local hooks/ folder)
 	loadExternalPlugins(router)
-
-	// Load global middleware
-	router.Use(middleware.LogHandler)
 
 	return router
 }
@@ -66,9 +60,4 @@ func loadExternalPlugins(router *mux.Router) {
 		(*routeHook).Apply(router)
 		fmt.Fprintf(os.Stderr, "Applied routehook: %s.so", name)
 	}
-}
-
-// HealthHandler serves up a health status.
-func HealthHandler(res http.ResponseWriter, req *http.Request) {
-	res.WriteHeader(http.StatusNoContent)
 }

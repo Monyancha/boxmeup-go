@@ -16,11 +16,12 @@ type Route struct {
 
 // Configuration is a placeholder for available configurations
 type Configuration struct {
-	Port       int    `env:"PORT" envDefault:"8080"`
-	MysqlDSN   string `env:"MYSQL_DSN" envDefault:"boxmeup:boxmeup@tcp(localhost:3306)/boxmeup"`
-	LegacySalt string `env:"LEGACY_SALT,required"`
-	JWTSecret  string `env:"JWT_SECRET,required"`
-	WebHost    string `env:"WEB_HOST" envDefault:"http://localhost:8080"`
+	Port          int      `env:"PORT" envDefault:"8080"`
+	MysqlDSN      string   `env:"MYSQL_DSN" envDefault:"boxmeup:boxmeup@tcp(localhost:3306)/boxmeup"`
+	LegacySalt    string   `env:"LEGACY_SALT,required"`
+	JWTSecret     string   `env:"JWT_SECRET,required"`
+	WebHost       string   `env:"WEB_HOST" envDefault:"http://localhost:8080"`
+	AllowedOrigin []string `env:"CORS_ORIGIN" envDefault:"http://localhost:3000" envSeparater:","`
 }
 
 var Config Configuration

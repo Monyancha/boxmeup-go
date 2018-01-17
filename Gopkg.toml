@@ -47,3 +47,7 @@
 
 [[constraint]]
   name = "github.com/justinas/alice"
+
+[[constraint]]
+  name = "github.com/rs/cors"
+  version = "1.2.0"

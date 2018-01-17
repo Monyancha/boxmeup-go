@@ -49,6 +49,12 @@
   revision = "1051eaf52fcafdd87ead59d28b065f1fcb8274ec"
 
 [[projects]]
+  name = "github.com/rs/cors"
+  packages = ["."]
+  revision = "7af7a1e09ba336d2ea14b1ce73bf693c6837dbf6"
+  version = "v1.2"
+
+[[projects]]
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   revision = "cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b"
@@ -56,6 +62,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e329ef364ad4e464a438128a8a9e8fe0f199b16978cdb4b33541c7ab49a6db3b"
+  inputs-digest = "af1145cfb7ec60e04fdf3684156f89ac660e39058e2429a649bfc9edbaac8804"
   solver-name = "gps-cdcl"
   solver-version = 1
