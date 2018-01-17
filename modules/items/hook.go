@@ -24,37 +24,37 @@ var routes = []config.Route{
 		Name:    "CreateContainerItem",
 		Method:  "POST",
 		Pattern: "/api/container/{id}/item",
-		Handler: chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(saveContainerItemHandler),
+		Handler: chain.New(middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(saveContainerItemHandler),
 	},
 	config.Route{
 		Name:    "ModifyContainerItem",
 		Method:  "PUT",
 		Pattern: "/api/container/{id}/item/{item_id}",
-		Handler: chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(saveContainerItemHandler),
+		Handler: chain.New(middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(saveContainerItemHandler),
 	},
 	config.Route{
 		Name:    "DeleteItems",
 		Method:  "DELETE",
 		Pattern: "/api/container/{id}/item/{item_id}",
-		Handler: chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(deleteContainerItemHandler),
+		Handler: chain.New(middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(deleteContainerItemHandler),
 	},
 	config.Route{
 		Name:    "DeleteItemsBulk",
 		Method:  "POST",
 		Pattern: "/api/container/item/bulk-delete",
-		Handler: chain.New(middleware.LogHandler, middleware.AuthHandler).ThenFunc(deleteManyHandler),
+		Handler: chain.New(middleware.AuthHandler).ThenFunc(deleteManyHandler),
 	},
 	config.Route{
 		Name:    "Items",
 		Method:  "GET",
 		Pattern: "/api/container/{id}/item",
-		Handler: chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(containerItemsHandler),
+		Handler: chain.New(middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(containerItemsHandler),
 	},
 	config.Route{
 		Name:    "Items",
 		Method:  "GET",
 		Pattern: "/api/item/search",
-		Handler: chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(searchItemHandler),
+		Handler: chain.New(middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(searchItemHandler),
 	},
 }
 

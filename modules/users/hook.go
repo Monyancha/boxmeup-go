@@ -21,7 +21,7 @@ var routes = []config.Route{
 		Name:    "Login",
 		Method:  "POST",
 		Pattern: "/api/user/login",
-		Handler: chain.New(middleware.LogHandler, middleware.JsonResponseHandler).ThenFunc(loginHandler),
+		Handler: chain.New(middleware.JsonResponseHandler).ThenFunc(loginHandler),
 	},
 	config.Route{
 		Name:    "Logout",
@@ -33,13 +33,13 @@ var routes = []config.Route{
 		Name:    "Register",
 		Method:  "POST",
 		Pattern: "/api/user/register",
-		Handler: chain.New(middleware.LogHandler, middleware.JsonResponseHandler).ThenFunc(registerHandler),
+		Handler: chain.New(middleware.JsonResponseHandler).ThenFunc(registerHandler),
 	},
 	config.Route{
 		Name:    "User",
 		Method:  "GET",
 		Pattern: "/api/user/current",
-		Handler: chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(userHandler),
+		Handler: chain.New(middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(userHandler),
 	},
 }
 

@@ -14,7 +14,6 @@ import (
 	"github.com/cjsaylor/boxmeup-go/modules/locations"
 	"github.com/cjsaylor/boxmeup-go/modules/users"
 	"github.com/gorilla/mux"
-	chain "github.com/justinas/alice"
 )
 
 var externalPlugins = []string{
@@ -26,7 +25,7 @@ var routes = []config.Route{
 		Name:    "Health",
 		Method:  "GET",
 		Pattern: "/health",
-		Handler: chain.New(middleware.LogHandler).ThenFunc(HealthHandler),
+		Handler: http.HandlerFunc(HealthHandler),
 	},
 }
 
@@ -48,6 +47,9 @@ func NewRouter() *mux.Router {
 
 	// External propriatary plugins (these assume to be in a local hooks/ folder)
 	loadExternalPlugins(router)
+
+	// Load global middleware
+	router.Use(middleware.LogHandler)
 
 	return router
 }

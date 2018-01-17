@@ -23,31 +23,31 @@ var routes = []config.Route{
 		Name:    "CreateContainer",
 		Method:  "POST",
 		Pattern: "/api/container",
-		Handler: chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(createContainerHandler),
+		Handler: chain.New(middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(createContainerHandler),
 	},
 	config.Route{
 		Name:    "UpdateContainer",
 		Method:  "PUT",
 		Pattern: "/api/container/{id}",
-		Handler: chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(updateContainerHandler),
+		Handler: chain.New(middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(updateContainerHandler),
 	},
 	config.Route{
 		Name:    "DeleteContainer",
 		Method:  "DELETE",
 		Pattern: "/api/container/{id}",
-		Handler: chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(deleteContainerHandler),
+		Handler: chain.New(middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(deleteContainerHandler),
 	},
 	config.Route{
 		Name:    "Container",
 		Method:  "GET",
 		Pattern: "/api/container/{id}",
-		Handler: chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(containerHandler),
+		Handler: chain.New(middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(containerHandler),
 	},
 	config.Route{
 		Name:    "Containers",
 		Method:  "GET",
 		Pattern: "/api/container",
-		Handler: chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(containersHandler),
+		Handler: chain.New(middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(containersHandler),
 	},
 }
 

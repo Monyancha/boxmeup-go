@@ -24,25 +24,25 @@ var routes = []config.Route{
 		Name:    "CreateLocation",
 		Method:  "POST",
 		Pattern: "/api/location",
-		Handler: chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(CreateLocationHandler),
+		Handler: chain.New(middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(CreateLocationHandler),
 	},
 	config.Route{
 		Name:    "UpdateLocation",
 		Method:  "PUT",
 		Pattern: "/api/location/{id}",
-		Handler: chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(UpdateLocationHandler),
+		Handler: chain.New(middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(UpdateLocationHandler),
 	},
 	config.Route{
 		Name:    "DeleteLocation",
 		Method:  "DELETE",
 		Pattern: "/api/location/{id}",
-		Handler: chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(DeleteLocationHandler),
+		Handler: chain.New(middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(DeleteLocationHandler),
 	},
 	config.Route{
 		Name:    "Locations",
 		Method:  "GET",
 		Pattern: "/api/location",
-		Handler: chain.New(middleware.LogHandler, middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(LocationsHandler),
+		Handler: chain.New(middleware.AuthHandler, middleware.JsonResponseHandler).ThenFunc(LocationsHandler),
 	},
 }
 
