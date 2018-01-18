@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:5.6
+    env_file: .env
+    networks:
+      - bmu-nw
+  app:
+    image: cjsaylor/boxmeup-go
+    environment:
+      - VIRTUAL_HOST=api-beta.boxmeupapp.com
+      - CORS_ORIGIN=https://beta.boxmeupapp.com
+    env_file: .env
+    networks:
+      - bmu-nw
+      - public-nw
+    depends_on:
+      - mysql
+
+networks:
+  bmu-nw:
+    driver: bridge
+  public-nw:
+    external:
+      name: public-nw
