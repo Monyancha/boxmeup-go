@@ -64,7 +64,7 @@ func AuthHandler(next http.Handler) http.Handler {
 			http.Error(res, err.Error(), http.StatusUnauthorized)
 			return
 		}
-		if sessionCookie != nil && req.Header.Get("x-xsrf-token") != claims["xsrfToken"] {
+		if req.Method != "GET" && sessionCookie != nil && req.Header.Get("x-xsrf-token") != claims["xsrfToken"] {
 			http.Error(res, "XSRF token mismatch!", http.StatusForbidden)
 			return
 		}
