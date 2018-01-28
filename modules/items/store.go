@@ -199,7 +199,7 @@ func (c *Store) GetContainerItems(container *containers.Container, sort models.S
 
 func (c *Store) SearchItems(userID int64, term string, sort models.SortBy, limit models.QueryLimit) (PagedResponse, error) {
 	q := `
-		select ci.id, container_id, ci.uuid, body, quantity, ci.created, ci.modified
+		select SQL_CALC_FOUND_ROWS ci.id, container_id, ci.uuid, body, quantity, ci.created, ci.modified
 		from container_items ci
 		inner join containers c on c.id = ci.container_id and c.user_id = ?
 		where body like concat('%%', ?, '%%')
