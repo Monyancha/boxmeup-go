@@ -6,6 +6,7 @@ import (
 	"os"
 	"plugin"
 
+	"github.com/cjsaylor/boxmeup-go/config"
 	"github.com/cjsaylor/boxmeup-go/hooks"
 	"github.com/cjsaylor/boxmeup-go/middleware"
 	"github.com/cjsaylor/boxmeup-go/modules/containers"
@@ -14,10 +15,6 @@ import (
 	"github.com/cjsaylor/boxmeup-go/modules/users"
 	"github.com/gorilla/mux"
 )
-
-var externalPlugins = []string{
-	"imagery",
-}
 
 // NewRouter gets a pre-configured router with all defined routes
 func NewRouter() *mux.Router {
@@ -49,7 +46,7 @@ func NewRouter() *mux.Router {
 }
 
 func loadExternalPlugins(router *mux.Router) {
-	for _, name := range externalPlugins {
+	for _, name := range config.Config.AllowedExtensions {
 		plugin, err := plugin.Open(fmt.Sprintf("hooks/%s.so", name))
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
@@ -58,6 +55,6 @@ func loadExternalPlugins(router *mux.Router) {
 		routeHookSym, _ := plugin.Lookup("RouteHook")
 		routeHook := routeHookSym.(*hooks.RouteHook)
 		(*routeHook).Apply(router)
-		fmt.Fprintf(os.Stderr, "Applied routehook: %s.so", name)
+		fmt.Fprintf(os.Stderr, "Applied routehook: %s.so\n", name)
 	}
 }
