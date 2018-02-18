@@ -8,7 +8,7 @@ Boxmeup is a web and mobile application to help users keep track of what they ha
 
 ## Requirements
 
-* [Go >= 1.9.2](https://golang.org) - For local development
+* [Go >= 1.10](https://golang.org) - For local development
 * [Docker 17.05.0-ce+](https://www.docker.com) - For building and running in docker containers
 
 ## Setup
