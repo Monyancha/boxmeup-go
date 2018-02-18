@@ -1,4 +1,4 @@
-FROM cjsaylor/go-alpine-sdk:1.10-rc as builder
+FROM cjsaylor/go-alpine-sdk:1.10 as builder
 COPY . /go/src/github.com/cjsaylor/boxmeup-go
 WORKDIR /go/src/github.com/cjsaylor/boxmeup-go
 RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags "-s" -v -o server ./bin
